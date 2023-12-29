@@ -28,10 +28,16 @@ app.get('/', (req, res) => {
     res.render('home');
 })
 
+app.get('/user/:id', async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id)
+    res.render('show', { user });
+})
+
 app.post('/register', async (req, res) => {
     const user = new User(req.body);
     await user.save();
-    res.send("Done !!");
+    res.redirect(`/user/${user._id}`)
 })
 
 
