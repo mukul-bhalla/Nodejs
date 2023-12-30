@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== "production") {
 const express = require('express');
 const app = express();
 const path = require('path')
+const methodOverride = require('method-override')
 
 const User = require('./models/user')
 
@@ -20,6 +21,7 @@ mongoose.connect(dbUrl)
     })
 
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'));
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
@@ -34,6 +36,14 @@ app.get('/user/:id', async (req, res) => {
     res.render('show', { user });
 })
 
+
+app.get('/user/:id/edit', async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    res.render('edit', { user });
+})
+
+
 app.post('/register', async (req, res) => {
     const user = new User(req.body);
     await user.save();
@@ -43,6 +53,18 @@ app.post('/register', async (req, res) => {
 
 app.get('/login', (req, res) => {
     res.render('login')
+})
+
+app.put('/user/:id', async (req, res) => {
+    const { id } = req.params;
+    await User.findByIdAndUpdate(id, req.body);
+    res.redirect(`/user/${id}`)
+})
+
+app.delete('/user/:id', async (req, res) => {
+    const { id } = req.params;
+    await User.findByIdAndDelete(id)
+    res.redirect('/')
 })
 
 app.listen(Port, () => {
