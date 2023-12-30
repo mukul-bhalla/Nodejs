@@ -8,6 +8,7 @@ const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 
 const User = require('./models/user')
+const catchAsync = require('./utils/catchAsync')
 
 const Port = process.env.PORT;
 const dbUrl = process.env.DB_URL
@@ -34,41 +35,47 @@ app.get('/', (req, res) => {
     res.render('home');
 })
 
-app.get('/user/:id', async (req, res) => {
+app.get('/user/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const user = await User.findById(id)
     res.render('show', { user });
-})
+}))
 
 
-app.get('/user/:id/edit', async (req, res) => {
+app.get('/user/:id/edit', catchAsync(async (req, res) => {
     const { id } = req.params;
     const user = await User.findById(id);
     res.render('edit', { user });
-})
+}))
 
 
-app.post('/register', async (req, res) => {
+app.post('/register', catchAsync(async (req, res, next) => {
+
     const user = new User(req.body);
     await user.save();
     res.redirect(`/user/${user._id}`)
-})
+
+}))
 
 
 app.get('/login', (req, res) => {
     res.render('login')
 })
 
-app.put('/user/:id', async (req, res) => {
+app.put('/user/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await User.findByIdAndUpdate(id, req.body);
     res.redirect(`/user/${id}`)
-})
+}))
 
-app.delete('/user/:id', async (req, res) => {
+app.delete('/user/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await User.findByIdAndDelete(id)
     res.redirect('/')
+}))
+
+app.use((err, req, res, next) => {
+    res.send("Error");
 })
 
 app.listen(Port, () => {
