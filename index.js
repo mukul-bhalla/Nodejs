@@ -5,6 +5,7 @@ const express = require('express');
 const app = express();
 const path = require('path')
 const methodOverride = require('method-override')
+const ejsMate = require('ejs-mate')
 
 const User = require('./models/user')
 
@@ -19,6 +20,9 @@ mongoose.connect(dbUrl)
         console.log("Mongo Error");
         console.log(e);
     })
+
+
+app.engine('ejs', ejsMate)
 
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));

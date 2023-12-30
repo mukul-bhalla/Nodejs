@@ -1,34 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Details</title>
-</head>
-
-<body>
+<%- layout('layouts/boilerplate')%>
     <h1>Edit Details</h1>
-    <form action="/user/<%= user._id %>?_method=PUT" method="POST">
-        <div>
-            <label for="name">Enter Name: </label>
-            <input type="name" name="name" id="name" value="<%= user.name %>">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <form action="/user/<%= user._id %>?_method=PUT" method="POST" class="validated-form" novalidate>
+                <div>
+                    <label class="form-label" for="name">Edit Name: </label>
+                    <input class="form-control" type="name" name="name" id="name" value="<%= user.name %>" required>
+                </div>
+                <div>
+                    <label class="form-label" for="email">Edit Email Id: </label>
+                    <input class="form-control" type="email" name="email" id="email" value="<%= user.email %>" readonly>
+                </div>
+                <div>
+                    <label class="form-label" for="phone">Edit Mobile Number: </label>
+                    <input class="form-control" type="phone" name="phone" id="phone" value="<%= user.phone %>" readonly>
+                </div>
+                <div>
+                    <label class="form-label" for="password">Change Password: </label>
+                    <input class="form-control" type="password" name="password" id="password"
+                        value="<%= user.password %>" required>
+                </div>
+                <div class="d-grid gap-* mt-3">
+                    <button class="btn btn-primary">Save </button>
+                </div>
+            </form>
         </div>
-        <div>
-            <label for="email">Enter Registered Email Id: </label>
-            <input type="email" name="email" id="email" value="<%= user.email %>">
-        </div>
-        <div>
-            <label for="phone">Enter Registered Mobile Number: </label>
-            <input type="phone" name="phone" id="phone" value="<%= user.phone %>">
-        </div>
-        <div>
-            <label for="password">Enter Password: </label>
-            <input type="password" name="password" id="password" value="<%= user.password %>">
-
-        </div>
-        <button>Save </button>
-    </form>
-</body>
-
-</html>
+    </div>
