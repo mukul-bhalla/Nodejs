@@ -5,6 +5,8 @@ const User = require('../models/user')
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const ExpressError = require('../utils/ExpressError')
+const nodemailer = require('nodemailer');
+const mailgen = require('mailgen');
 
 const validateUser = (req, res, next) => {
     const userSchema = Joi.object({
@@ -41,6 +43,10 @@ router.get('/register', (req, res) => {
 
 router.get('/login', (req, res) => {
     res.render('login')
+})
+
+router.post('login1', async (req, res) => {
+
 })
 
 router.post('/login2', async (req, res) => {

@@ -9,6 +9,9 @@ const ejsMate = require('ejs-mate')
 const Joi = require('joi');
 const session = require('express-session');
 const flash = require('connect-flash');
+const nodemailer = require('nodemailer');
+
+
 
 
 const User = require('./models/user')
@@ -20,14 +23,14 @@ const users = require('./routes/users')
 const Port = process.env.PORT;
 const dbUrl = process.env.DB_URL
 const mongoose = require('mongoose');
-mongoose.connect(dbUrl)
-    .then(() => {
-        console.log("DB Connected");
-    })
-    .catch((e) => {
-        console.log("Mongo Error");
-        console.log(e);
-    })
+try {
+    mongoose.connect(dbUrl, {
+        writeConcern: { w: 'majority' },
+    });
+    console.log('Connected to MongoDB');
+} catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+}
 
 
 app.engine('ejs', ejsMate)

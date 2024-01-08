@@ -1,7 +1,7 @@
 <%- layout('layouts/boilerplate')%>
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <h1>Login</h1>
+    <div class="row mt-3">
+        <div class="col-md-4 offset-md-4">
+            <h1 class="text-center">Login</h1>
             <form action="/user/login1" method="post" novalidate class="validated-form">
                 <div>
                     <label class="form-label" for="email">Enter Registered Email Id: </label>
@@ -26,6 +26,11 @@
                 <div class="d-grid gap-* mt-3">
                     <button class="btn btn-success">Login</button>
                 </div>
+                <div class="d-grid gap-* mt-3">
+                </div>
             </form>
+            <div class="d-grid gap- mt-3">
+                <a class="btn btn-primary" href="/user/register">Register</a>
+            </div>
         </div>
     </div>

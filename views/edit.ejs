@@ -1,21 +1,21 @@
 <%- layout('layouts/boilerplate')%>
-    <h1>Edit Details</h1>
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
+    <div class="row mt-3">
+        <div class="col-md-4 offset-md-4">
+            <h1 class="text-center">Edit Details</h1>
             <form action="/user/<%= user._id %>?_method=PUT" method="POST" class="validated-form" novalidate>
-                <div>
+                <div class="mb-3">
                     <label class="form-label" for="name">Edit Name: </label>
                     <input class="form-control" type="name" name="name" id="name" value="<%= user.name %>" required>
                 </div>
-                <div>
+                <div class="mb-3">
                     <label class="form-label" for="email">Edit Email Id: </label>
                     <input class="form-control" type="email" name="email" id="email" value="<%= user.email %>" readonly>
                 </div>
-                <div>
+                <div class="mb-3">
                     <label class="form-label" for="phone">Edit Mobile Number: </label>
                     <input class="form-control" type="phone" name="phone" id="phone" value="<%= user.phone %>" readonly>
                 </div>
-                <div>
+                <div class="mb-3">
                     <label class="form-label" for="password">Update Password: </label>
                     <input class="form-control" type="password" name="password" id="password"
                         value="<%= user.password %>" required>

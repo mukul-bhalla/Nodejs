@@ -1,40 +1,55 @@
 <%- layout('layouts/boilerplate')%>
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
+    <div class="row mt-3">
+        <div class="col-md-4 offset-md-4">
+            <h1 class="text-center mb-3">Welcome !!</h1>
             <div class="card">
                 <!-- <img src="..." class="card-img-top" alt="Profile Pic"> -->
                 <div class="card-body">
-                    <h5 class="card-title">
+                    <h5 class="card-title text-center">
                         <%= user.name %>
                     </h5>
 
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
+                        <li class="list-group-item text-center">
                             <%= user.email %>
                         </li>
-                        <li class="list-group-item">
+                        <li class="list-group-item text-center">
                             <%= user.phone %>
                         </li>
+
                         <li class="list-group-item">
-                            <% if (user.isAdmin) { %>
-                                <button class="btn btn-success"> Show All User</button>
-                                <% } %>
+                            <div class="d-grid gap-* mt-3">
+
+                                <a href="/user/<%= user._id %>/edit" class="btn btn-primary ">Edit</a>
+                            </div>
                         </li>
                         <li class="list-group-item">
-                            <a href="/user/<%= user._id %>/edit" class="btn btn-primary ">Edit</a>
-                        </li>
-                        <li class="list-group-item">
+
                             <form action=" /user/<%=user._id %>?_method=DELETE" method="POST">
-                                <button class="btn btn-danger">Delete</button>
+                                <div class="d-grid gap-* mt-3">
+
+                                    <button class="btn btn-danger">Delete</button>
+                                </div>
                             </form>
                         </li>
                         <li class="list-group-item">
                             <form action="/user/logout" method="POST">
-                                <button class="btn btn-warning">Sign Out</button>
+                                <div class="d-grid gap-* mt-3">
+
+                                    <button class="btn btn-warning">Sign Out</button>
+                                </div>
                             </form>
                         </li>
                     </ul>
                 </div>
             </div>
+
+            <% if (user.isAdmin) { %>
+                <div class="d-grid gap-* mt-3">
+
+                    <button class="btn btn-success"> Show All User</button>
+                </div>
+                <% } %>
+
         </div>
     </div>
