@@ -6,10 +6,12 @@ const app = express();
 const path = require('path')
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
+const Joi = require('joi');
 
 const User = require('./models/user')
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
+
 
 const Port = process.env.PORT;
 const dbUrl = process.env.DB_URL
@@ -32,6 +34,26 @@ app.use(methodOverride('_method'));
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 
+
+const validateUser = (req, res, next) => {
+    const userSchema = Joi.object({
+        name: Joi.string().required(),
+        email: Joi.string()
+            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        phone: Joi.number().required(),
+        password: Joi.string().required()
+    });
+    const { error } = userSchema.validate(req.body);
+
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    }
+    else {
+        next()
+    }
+}
+
 app.get('/', (req, res) => {
     res.render('home');
 })
@@ -50,9 +72,20 @@ app.get('/user/:id/edit', catchAsync(async (req, res) => {
 }))
 
 
-app.post('/register', catchAsync(async (req, res, next) => {
-    if (!req.body)
-        throw new ExpressError('Invalid Data', 400);
+app.post('/register', validateUser, catchAsync(async (req, res, next) => {
+    const userSchema = Joi.object({
+        name: Joi.string().required(),
+        email: Joi.string()
+            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        phone: Joi.number().required(),
+        password: Joi.string().required()
+    })
+    const { error } = userSchema.validate(req.body);
+
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    }
     const user = new User(req.body);
     await user.save();
     res.redirect(`/user/${user._id}`)
@@ -64,7 +97,7 @@ app.get('/login', (req, res) => {
     res.render('login')
 })
 
-app.put('/user/:id', catchAsync(async (req, res) => {
+app.put('/user/:id', validateUser, catchAsync(async (req, res) => {
     const { id } = req.params;
     await User.findByIdAndUpdate(id, req.body);
     res.redirect(`/user/${id}`)
