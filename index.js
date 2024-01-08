@@ -9,6 +9,7 @@ const ejsMate = require('ejs-mate')
 
 const User = require('./models/user')
 const catchAsync = require('./utils/catchAsync')
+const ExpressError = require('./utils/ExpressError')
 
 const Port = process.env.PORT;
 const dbUrl = process.env.DB_URL
@@ -50,7 +51,8 @@ app.get('/user/:id/edit', catchAsync(async (req, res) => {
 
 
 app.post('/register', catchAsync(async (req, res, next) => {
-
+    if (!req.body)
+        throw new ExpressError('Invalid Data', 400);
     const user = new User(req.body);
     await user.save();
     res.redirect(`/user/${user._id}`)
@@ -74,8 +76,16 @@ app.delete('/user/:id', catchAsync(async (req, res) => {
     res.redirect('/')
 }))
 
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found !', 404));
+})
+
 app.use((err, req, res, next) => {
-    res.send("Error");
+    const { statusCode = 500 } = err;
+    if (!err.message) {
+        err.message = "Oh no ! Something went wrong !"
+    }
+    res.status(statusCode).render('error', { err });
 })
 
 app.listen(Port, () => {
