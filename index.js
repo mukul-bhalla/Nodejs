@@ -10,6 +10,7 @@ const Joi = require('joi');
 const session = require('express-session');
 const flash = require('connect-flash');
 
+
 const User = require('./models/user')
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
@@ -57,15 +58,6 @@ app.use((req, res, next) => {
     next();
 })
 app.use('/user', users)
-
-app.get('/', (req, res) => {
-    res.render('home');
-})
-
-
-app.get('/login', (req, res) => {
-    res.render('login')
-})
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found !', 404));

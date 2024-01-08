@@ -2,21 +2,21 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: [true, "Name cannot be blank"]
     },
     email: {
         type: String,
-        required: true,
+        required: [true, "Email cannot be blank"]
     },
     phone: {
         type: Number,
-        required: true,
+        required: [true, "Mobile cannot be blank"],
         unique: true
 
     },
     password: {
         type: String,
-        required: true
+        required: [true, "Password cannot be blank"]
     },
     isAdmin: {
         type: Boolean,
