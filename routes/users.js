@@ -7,6 +7,10 @@ const bcrypt = require('bcrypt');
 const ExpressError = require('../utils/ExpressError')
 const nodemailer = require('nodemailer');
 const mailgen = require('mailgen');
+const multer = require('multer');
+const cloudinary = require('cloudinary')
+const { storage } = require('../cloudinary')
+const upload = multer({ storage })
 
 const validateUser = (req, res, next) => {
     const userSchema = Joi.object({
@@ -14,7 +18,7 @@ const validateUser = (req, res, next) => {
         email: Joi.string()
             .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
         phone: Joi.number().required(),
-        password: Joi.string().required()
+        password: Joi.string()
     });
     const { error } = userSchema.validate(req.body);
 
@@ -83,7 +87,8 @@ router.get('/:id', requireLogin, catchAsync(async (req, res) => {
         req.flash('error', "Cannot Find The User !");
         return res.redirect('/user/login')
     }
-    if (user._id.equals(req.session.user_id) || user.isAdmin) {
+    const current = await User.findById(req.session.user_id)
+    if (user._id.equals(req.session.user_id) || current.isAdmin) {
         res.render('show', { user });
     }
     else {
@@ -93,12 +98,14 @@ router.get('/:id', requireLogin, catchAsync(async (req, res) => {
 
 }))
 
-router.post('/register', validateUser, catchAsync(async (req, res, next) => {
+router.post('/register', upload.single('profile'), validateUser, catchAsync(async (req, res, next) => {
     try {
         const { password } = req.body;
+        const { filename, path } = req.file;
         const hash = await bcrypt.hash(password, 12);
-        const user = new User({ ...req.body, password: hash });
+        const user = new User({ ...req.body, password: hash, profile: { filename: filename, url: path } });
         await user.save();
+        // console.log(user);
         req.session.user_id = user._id;
         req.flash('success', 'Successfully Created Your Account !');
         res.redirect(`/user/${user._id}`)
@@ -106,6 +113,9 @@ router.post('/register', validateUser, catchAsync(async (req, res, next) => {
         req.flash('error', e.message)
         res.redirect('/user/register');
     }
+
+
+
 
 }))
 
@@ -117,7 +127,8 @@ router.get('/:id/edit', requireLogin, catchAsync(async (req, res) => {
         req.flash('error', "Cannot Find The User !");
         return res.redirect('/')
     }
-    if (user._id.equals(req.session.user_id || user.isAdmin)) {
+    const current = await User.findById(req.session.user_id)
+    if (user._id.equals(req.session.user_id) || current.isAdmin) {
 
         res.render('edit', { user });
     }
@@ -128,11 +139,18 @@ router.get('/:id/edit', requireLogin, catchAsync(async (req, res) => {
 }))
 
 
-router.put('/:id', requireLogin, validateUser, catchAsync(async (req, res) => {
+router.put('/:id', requireLogin, upload.single('profile'), validateUser, catchAsync(async (req, res) => {
     const { id } = req.params;
     const user = await User.findById(id);
-    if (user._id.equals(req.session.user_id) || user.isAdmin) {
-        await User.findByIdAndUpdate(id, { ...req.body });
+    const current = await User.findById(req.session.user_id)
+    if (user._id.equals(req.session.user_id) || current.isAdmin) {
+        const user = await User.findByIdAndUpdate(id, { ...req.body });
+        if (req.file) {
+            const { filename, path } = req.file;
+            await cloudinary.uploader.destroy(user.profile.filename);
+            user.profile = { filename: filename, url: path };
+        }
+        await user.save();
         req.flash('success', "Successfully Updated Account Details !")
         return res.redirect(`/user/${id}`)
     }
@@ -145,7 +163,8 @@ router.put('/:id', requireLogin, validateUser, catchAsync(async (req, res) => {
 router.delete('/:id', requireLogin, catchAsync(async (req, res) => {
     const { id } = req.params;
     const user = await User.findById(id);
-    if (user._id.equals(req.session.user_id) || user.isAdmin) {
+    const current = await User.findById(req.session.user_id)
+    if (user._id.equals(req.session.user_id) || current.isAdmin) {
         await User.findByIdAndDelete(id)
         req.flash('success', "Successfully Deleted Your Account !")
         res.redirect('/user/register');

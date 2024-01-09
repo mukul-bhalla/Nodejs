@@ -2,7 +2,8 @@
     <div class="row mt-3">
         <div class="col-md-4 offset-md-4">
             <h1 class="text-center">Edit Details</h1>
-            <form action="/user/<%= user._id %>?_method=PUT" method="POST" class="validated-form" novalidate>
+            <form action="/user/<%= user._id %>?_method=PUT" method="POST" class="validated-form" novalidate
+                enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label" for="name">Edit Name: </label>
                     <input class="form-control" type="name" name="name" id="name" value="<%= user.name %>" required>
@@ -18,7 +19,11 @@
                 <div class="mb-3">
                     <label class="form-label" for="password">Update Password: </label>
                     <input class="form-control" type="password" name="password" id="password"
-                        value="<%= user.password %>" required>
+                        value="<%= user.password %>" required disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Update Profile Picture</label>
+                    <input class="form-control" type="file" id="formFile" name="profile">
                 </div>
                 <div class="d-grid gap-* mt-3">
                     <button class="btn btn-primary">Save </button>

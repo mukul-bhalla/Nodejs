@@ -2,7 +2,7 @@
     <div class="row mt-3">
         <div class="col-md-4 offset-md-4">
             <h1 class="text-center">Welcome To User Management App</h1>
-            <form action="/user/register" method="POST" novalidate class="validated-form">
+            <form action="/user/register" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
                 <div>
                     <label class="form-label" for="name">Enter Name </label>
                     <input class="form-control" type="name" name="name" id="name" required>
@@ -19,8 +19,12 @@
                 <div>
                     <label class="form-label" for="password">Enter Password: </label>
                     <input class="form-control" type="password" name="password" id="password" required>
-
                 </div>
+                <div>
+                    <label for="formFile" class="form-label">Select A Profile Picture</label>
+                    <input class="form-control" type="file" id="formFile" name="profile">
+                </div>
+
                 <div class="d-grid gap-* mt-3">
                     <button class="btn btn-success btn-block">Sign Up</button>
                 </div>
