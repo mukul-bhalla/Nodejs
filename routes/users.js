@@ -5,8 +5,6 @@ const User = require('../models/user')
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const ExpressError = require('../utils/ExpressError')
-const nodemailer = require('nodemailer');
-const mailgen = require('mailgen');
 const multer = require('multer');
 const cloudinary = require('cloudinary')
 const { storage } = require('../cloudinary')
@@ -51,7 +49,6 @@ router.get('/login', (req, res) => {
 
 router.get('/index', requireLogin, catchAsync(async (req, res) => {
     const current = await User.findById(req.session.user_id);
-    // console.log(req.session.user_id);
     if (current.isAdmin) {
         const all = await User.find({});
         return res.render('index', { all });
