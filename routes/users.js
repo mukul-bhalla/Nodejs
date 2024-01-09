@@ -49,9 +49,19 @@ router.get('/login', (req, res) => {
     res.render('login')
 })
 
-router.post('login1', async (req, res) => {
+router.get('/index', requireLogin, catchAsync(async (req, res) => {
+    const current = await User.findById(req.session.user_id);
+    // console.log(req.session.user_id);
+    if (current.isAdmin) {
+        const all = await User.find({});
+        return res.render('index', { all });
+    }
+    else {
+        req.flash('error', "You are not authenticated !");
+        res.redirect('/user/login')
+    }
+}))
 
-})
 
 router.post('/login2', async (req, res) => {
     const { phone, password } = req.body;
@@ -101,9 +111,12 @@ router.get('/:id', requireLogin, catchAsync(async (req, res) => {
 router.post('/register', upload.single('profile'), validateUser, catchAsync(async (req, res, next) => {
     try {
         const { password } = req.body;
-        const { filename, path } = req.file;
         const hash = await bcrypt.hash(password, 12);
-        const user = new User({ ...req.body, password: hash, profile: { filename: filename, url: path } });
+        const user = new User({ ...req.body, password: hash });
+        if (req.file) {
+            const { filename, path } = req.file;
+            user.profile = { filename: filename, url: path }
+        }
         await user.save();
         // console.log(user);
         req.session.user_id = user._id;

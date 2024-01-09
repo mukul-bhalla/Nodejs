@@ -1,0 +1,26 @@
+<%- layout('layouts/boilerplate')%>
+    <h1>All Users</h1>
+    <% for(user of all) { %>
+        <div class="card mb-3">
+            <div class="row">
+                <div class="col-md-2 offset-md-4">
+
+                    <img crossorigin="anonymous" src="<%= user.profile.profile %>" alt="" class="img-fluid">
+
+
+
+                </div>
+                <div class="col-md-2">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <%= user.title %>
+                        </h5>
+
+
+                        <a class="btn btn-primary" href="/user/<%=user._id %>">View User</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
