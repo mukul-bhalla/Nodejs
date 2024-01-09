@@ -6,16 +6,10 @@ const app = express();
 const path = require('path')
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
-const Joi = require('joi');
 const session = require('express-session');
 const flash = require('connect-flash');
-const nodemailer = require('nodemailer');
 
 
-
-
-const User = require('./models/user')
-const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
 const users = require('./routes/users')
 
@@ -45,8 +39,8 @@ const sessionConfig = {
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-        maxAge: 1000 * 60 * 60 * 24 * 7
+        expires: Date.now() + 1000 * 60 * 20,
+        maxAge: 1000 * 60 * 20
     }
 }
 app.use(session(sessionConfig))
