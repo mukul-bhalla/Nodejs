@@ -13,11 +13,16 @@
 </head>
 
 
-<body class="d-flex flex-column vh-100 container">
-    <%- include('../partials/flash') %>
-        <%-body%>
 
-            <script src="/js/validateForms.js"></script>
+<body class="d-flex flex-column vh-100 ">
+    <main class="container-mt-5">
+
+        <%- include('../partials/flash') %>
+            <%-body%>
+    </main>
+
+    <%- include('../partials/footer') %>
+        <script src="/js/validateForms.js"></script>
 </body>
 
 </html>

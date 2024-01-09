@@ -50,12 +50,15 @@ app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 
 app.use((req, res, next) => {
+    res.locals.currentUser = req.session.user_id;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
 })
 app.use('/user', users)
-
+app.get('/', (req, res) => {
+    res.render('homepage')
+})
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found !', 404));
 })
